@@ -1,4 +1,6 @@
-#Sample code for using Jena, topbraid spin and Virtuoso. Most dependencies are installed by Maven automatically. 
+#Sample code for using Jena, topbraid spin and Virtuoso. 
+
+Most dependencies are installed by Maven automatically. 
 
 RDFtest.java is a standalone program that illustrates the Jena libraries and has a very simple prov
 inferencing example.
