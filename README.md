@@ -1,5 +1,9 @@
-Sample code for using Jena, topbraid spin and Virtuoso. Most dependencies are installed by Maven automatically. 
-Because the virtuoso drivers aren't available as maven artifacts, you need to download and manually install--
+#Sample code for using Jena, topbraid spin and Virtuoso. Most dependencies are installed by Maven automatically. 
+
+RDFtest.java is a standalone program that illustrates the Jena libraries and has a very simple prov
+inferencing example.
+SPINtest uses the Topbraid SPIN libraries for jena to do SPIN inferencing over a sample knowledge graph.
+VIRTtest is a example of connecting to the virtuoso triplestore. The example uses docker to provision a triple storeusing the following instructions.Because the virtuoso drivers aren't available as maven artifacts, you need to download and manually install--
 
 * **Command line:**
 * 1. Download or checkout Virtuoso Jena 2.10.x provider Jar and Virtuoso JDBC 4 Driver JAr
