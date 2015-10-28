@@ -1,0 +1,501 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix afn: <http://jena.hpl.hp.com/ARQ/function#> .
+@prefix spin: <http://spinrdf.org/spin#> .
+@prefix fn: <http://www.w3.org/2005/xpath-functions#> .
+@prefix sp: <http://spinrdf.org/sp#> .
+@prefix kspin: <http://topbraid.org/examples/kennedysSPIN#> .
+@prefix smf: <http://topbraid.org/sparqlmotionfunctions#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix kennedys: <http://topbraid.org/examples/kennedys#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix spl: <http://spinrdf.org/spl#> .
+
+sp:_age
+    sp:varName "age"^^xsd:string ;
+    a sp:Variable .
+
+sp:_birthYear
+    sp:varName "birthYear"^^xsd:string ;
+    a sp:Variable .
+
+sp:_child
+    sp:varName "child"^^xsd:string ;
+    a sp:Variable .
+
+sp:_childAge
+    sp:varName "childAge"^^xsd:string ;
+    a sp:Variable .
+
+sp:_createPredicate
+    sp:varName "createPredicate"^^xsd:string ;
+    a sp:Variable .
+
+sp:_currentYear
+    sp:varName "currentYear"^^xsd:string ;
+    a sp:Variable .
+
+sp:_father
+    sp:varName "father"^^xsd:string ;
+    a sp:Variable .
+
+sp:_gender
+    sp:varName "gender"^^xsd:string ;
+    a sp:Variable .
+
+sp:_grandParent
+    sp:varName "grandParent"^^xsd:string ;
+    a sp:Variable .
+
+sp:_parent
+    sp:varName "parent"^^xsd:string ;
+    a sp:Variable .
+
+sp:_predicate
+    sp:varName "predicate"^^xsd:string ;
+    a sp:Variable .
+
+sp:_spouse
+    sp:varName "spouse"^^xsd:string ;
+    a sp:Variable .
+
+sp:_spouseGender
+    sp:varName "spouseGender"^^xsd:string ;
+    a sp:Variable .
+
+sp:_str
+    sp:varName "str"^^xsd:string ;
+    a sp:Variable .
+
+sp:_sub
+    sp:varName "sub"^^xsd:string ;
+    a sp:Variable .
+
+sp:_year
+    sp:varName "year"^^xsd:string ;
+    a sp:Variable .
+
+kennedys:Person
+    spin:constraint [
+        sp:templates ([
+                sp:object spin:ConstraintViolation ;
+                sp:predicate rdf:type ;
+                sp:subject _:A0
+            ]
+            [
+                sp:object spin:_this ;
+                sp:predicate spin:violationRoot ;
+                sp:subject _:A0
+            ]
+            [
+                sp:object kennedys:spouse ;
+                sp:predicate spin:violationPath ;
+                sp:subject _:A0
+            ]
+            [
+                sp:object "Same-sex marriage not permitted (in this model)" ;
+                sp:predicate rdfs:label ;
+                sp:subject _:A0
+            ]
+            [
+                sp:object _:A1 ;
+                sp:predicate spin:fix ;
+                sp:subject _:A0
+            ]
+            [
+                sp:object _:A2 ;
+                sp:predicate spin:fix ;
+                sp:subject _:A0
+            ]
+            [
+                sp:object kspin:SetObject ;
+                sp:predicate rdf:type ;
+                sp:subject _:A1
+            ]
+            [
+                sp:object _:A6 ;
+                sp:predicate rdf:subject ;
+                sp:subject _:A1
+            ]
+            [
+                sp:object kennedys:gender ;
+                sp:predicate rdf:predicate ;
+                sp:subject _:A1
+            ]
+            [
+                sp:object _:A7 ;
+                sp:predicate rdf:object ;
+                sp:subject _:A1
+            ]
+            [
+                sp:object kspin:SetObject ;
+                sp:predicate rdf:type ;
+                sp:subject _:A2
+            ]
+            [
+                sp:object spin:_this ;
+                sp:predicate rdf:subject ;
+                sp:subject _:A2
+            ]
+            [
+                sp:object kennedys:gender ;
+                sp:predicate rdf:predicate ;
+                sp:subject _:A2
+            ]
+            [
+                sp:object _:A8 ;
+                sp:predicate rdf:object ;
+                sp:subject _:A2
+            ]
+        ) ;
+        sp:where ([
+                sp:object _:A6 ;
+                sp:predicate kennedys:spouse ;
+                sp:subject spin:_this
+            ]
+            [
+                sp:object _:A9 ;
+                sp:predicate kennedys:gender ;
+                sp:subject spin:_this
+            ]
+            [
+                sp:object _:A10 ;
+                sp:predicate kennedys:gender ;
+                sp:subject _:A6
+            ]
+            [
+                sp:expression [
+                    sp:arg1 _:A10 ;
+                    a kspin:getOppositeSex
+                ] ;
+                sp:variable _:A7 ;
+                a sp:Let
+            ]
+            [
+                sp:expression [
+                    sp:arg1 _:A9 ;
+                    a kspin:getOppositeSex
+                ] ;
+                sp:variable _:A8 ;
+                a sp:Let
+            ]
+            [
+                sp:expression [
+                    sp:arg1 _:A9 ;
+                    sp:arg2 _:A10 ;
+                    a sp:eq
+                ] ;
+                a sp:Filter
+            ]
+        ) ;
+        a sp:Construct
+    ], [
+        sp:where ([
+                sp:object sp:_age ;
+                sp:predicate kspin:age ;
+                sp:subject spin:_this
+            ]
+            [
+                sp:expression [
+                    sp:arg1 [
+                        sp:arg1 sp:_age ;
+                        sp:arg2 0 ;
+                        a sp:lt
+                    ] ;
+                    sp:arg2 [
+                        sp:arg1 sp:_age ;
+                        sp:arg2 120 ;
+                        a sp:gt
+                    ] ;
+                    a sp:or
+                ] ;
+                a sp:Filter
+            ]
+        ) ;
+        a sp:Ask ;
+        rdfs:comment "age must be within a realistic range"^^xsd:string
+    ] ;
+    spin:rule [
+        sp:templates ([
+                sp:object sp:_age ;
+                sp:predicate kspin:age ;
+                sp:subject spin:_this
+            ]
+        ) ;
+        sp:where ([
+                sp:object sp:_birthYear ;
+                sp:predicate kennedys:birthYear ;
+                sp:subject spin:_this
+            ]
+            [
+                sp:expression [
+                    a kspin:getCurrentYear
+                ] ;
+                sp:variable sp:_currentYear ;
+                a sp:Let
+            ]
+            [
+                sp:expression [
+                    sp:arg1 sp:_currentYear ;
+                    sp:arg2 sp:_birthYear ;
+                    a sp:sub
+                ] ;
+                sp:variable sp:_age ;
+                a sp:Let
+            ]
+        ) ;
+        a sp:Construct ;
+        rdfs:comment "Infer age from currentYear - birthYear"^^xsd:string
+    ], [
+        kennedys:gender kennedys:female ;
+        kspin:predicate kspin:grandMother ;
+        a kspin:InferGrandParent
+    ], [
+        kennedys:gender kennedys:male ;
+        kspin:predicate kspin:grandFather ;
+        a kspin:InferGrandParent
+    ] .
+
+<http://topbraid.org/examples/kennedysSPIN>
+    a owl:Ontology ;
+    owl:imports <http://spinrdf.org/spin>, <http://topbraid.org/examples/kennedys> ;
+    owl:versionInfo "Created with TopBraid Composer"^^xsd:string .
+
+kspin:InferGrandParent
+    spin:abstract true ;
+    spin:body [
+        sp:templates ([
+                sp:object sp:_grandParent ;
+                sp:predicate sp:_predicate ;
+                sp:subject spin:_this
+            ]
+        ) ;
+        sp:where ([
+                sp:object sp:_parent ;
+                sp:predicate kennedys:parent ;
+                sp:subject spin:_this
+            ]
+            [
+                sp:object sp:_grandParent ;
+                sp:predicate kennedys:parent ;
+                sp:subject sp:_parent
+            ]
+            [
+                sp:object sp:_gender ;
+                sp:predicate kennedys:gender ;
+                sp:subject sp:_grandParent
+            ]
+        ) ;
+        a sp:Construct
+    ] ;
+    spin:constraint [
+        spl:predicate kennedys:gender ;
+        spl:valueType kennedys:Gender ;
+        a spl:Argument ;
+        rdfs:comment "the gender to match against"^^xsd:string
+    ], [
+        spl:predicate kspin:predicate ;
+        spl:valueType rdf:Property ;
+        a spl:Argument ;
+        rdfs:comment "the predicate to create (e.g. grandFather)"^^xsd:string
+    ] ;
+    spin:labelTemplate "Infer {?predicate} from {?gender} grand parents"^^xsd:string ;
+    a spin:Template ;
+    rdfs:comment "Find the grandparents of the given person ?this. This template can be used either for grandMother or grandFather." ;
+    rdfs:label "Infer grand parent"^^xsd:string ;
+    rdfs:subClassOf spin:Templates .
+
+kspin:SetObject
+    spin:body [
+        sp:deletePattern ([
+                sp:object _:A3 ;
+                sp:predicate _:A4 ;
+                sp:subject _:A5
+            ]
+        ) ;
+        sp:graphIRI <http://topbraid.org/examples/kennedys> ;
+        sp:insertPattern ([
+                sp:object [
+                    sp:varName "object"^^xsd:string
+                ] ;
+                sp:predicate _:A4 ;
+                sp:subject _:A5
+            ]
+        ) ;
+        sp:where ([
+                sp:object _:A3 ;
+                sp:predicate _:A4 ;
+                sp:subject _:A5
+            ]
+        ) ;
+        a sp:Modify
+    ] ;
+    spin:constraint [
+        spl:predicate rdf:object ;
+        a spl:Argument
+    ], [
+        spl:predicate rdf:predicate ;
+        spl:valueType rdf:Property ;
+        a spl:Argument
+    ], [
+        spl:predicate rdf:subject ;
+        spl:valueType rdfs:Resource ;
+        a spl:Argument
+    ] ;
+    spin:labelTemplate "Change {?predicate} of {?subject} to {?object}"^^xsd:string ;
+    a spin:Template ;
+    rdfs:label "Set object"^^xsd:string ;
+    rdfs:subClassOf spin:Templates .
+
+kspin:age
+    a owl:DatatypeProperty ;
+    rdfs:domain kennedys:Person ;
+    rdfs:label "age"^^xsd:string ;
+    rdfs:range xsd:integer .
+
+kspin:getCurrentYear
+    spin:body [
+        sp:resultVariables (sp:_year
+        ) ;
+        sp:where ([
+                sp:expression [
+                    sp:arg1 [
+                        a afn:now
+                    ] ;
+                    a xsd:string
+                ] ;
+                sp:variable sp:_str ;
+                a sp:Let
+            ]
+            [
+                sp:expression [
+                    sp:arg1 sp:_str ;
+                    sp:arg2 0 ;
+                    sp:arg3 4 ;
+                    a fn:substring
+                ] ;
+                sp:variable sp:_sub ;
+                a sp:Let
+            ]
+            [
+                sp:expression [
+                    sp:arg1 sp:_sub ;
+                    a xsd:integer
+                ] ;
+                sp:variable sp:_year ;
+                a sp:Let
+            ]
+        ) ;
+        a sp:Select
+    ] ;
+    spin:returnType xsd:integer ;
+    a spin:Function ;
+    rdfs:comment "Gets the current year as an xsd:integer." ;
+    rdfs:label "get current year"^^xsd:string ;
+    rdfs:subClassOf spin:Functions .
+
+kspin:getFather
+    spin:body [
+        sp:resultVariables (sp:_father
+        ) ;
+        sp:where ([
+                sp:object sp:_father ;
+                sp:predicate kennedys:parent ;
+                sp:subject spin:_arg1
+            ]
+            [
+                sp:object kennedys:male ;
+                sp:predicate kennedys:gender ;
+                sp:subject sp:_father
+            ]
+        ) ;
+        a sp:Select
+    ] ;
+    spin:constraint [
+        spl:predicate sp:arg1 ;
+        spl:valueType kennedys:Person ;
+        a spl:Argument ;
+        rdfs:comment "the person to get the father of"^^xsd:string
+    ] ;
+    a spin:Function ;
+    rdfs:comment "Gets the male parent of a given person (?arg1)" ;
+    rdfs:label "get father"^^xsd:string ;
+    rdfs:subClassOf spin:Functions .
+
+kspin:getOppositeSex
+    spin:body [
+        sp:resultVariables (_:A13
+        ) ;
+        sp:where ([
+                sp:object kennedys:Gender ;
+                sp:predicate rdf:type ;
+                sp:subject _:A13
+            ]
+            [
+                sp:expression [
+                    sp:arg1 _:A13 ;
+                    sp:arg2 [
+                        sp:varName "gender"^^xsd:string
+                    ] ;
+                    a sp:ne
+                ] ;
+                a sp:Filter
+            ]
+        ) ;
+        a sp:Select
+    ] ;
+    spin:constraint [
+        spl:predicate kennedys:gender ;
+        spl:valueType kennedys:Gender ;
+        a spl:Argument
+    ] ;
+    a spin:Function ;
+    rdfs:label "get opposite sex"^^xsd:string ;
+    rdfs:subClassOf spin:Functions .
+
+kspin:grandFather
+    a owl:ObjectProperty ;
+    rdfs:label "grand father"^^xsd:string ;
+    rdfs:subPropertyOf kspin:grandParent .
+
+kspin:grandMother
+    a owl:ObjectProperty ;
+    rdfs:label "grand mother"^^xsd:string ;
+    rdfs:subPropertyOf kspin:grandParent .
+
+kspin:grandParent
+    a owl:ObjectProperty ;
+    rdfs:label "grand parent"^^xsd:string .
+
+kspin:predicate
+    a rdf:Property ;
+    rdfs:label "predicate"^^xsd:string ;
+    rdfs:subPropertyOf sp:arg .
+
+_:A10
+    sp:varName "spouseGender"^^xsd:string .
+
+_:A13
+    sp:varName "opposite"^^xsd:string .
+
+_:A3
+    sp:varName "oldObject"^^xsd:string .
+
+_:A4
+    sp:varName "predicate"^^xsd:string .
+
+_:A5
+    sp:varName "subject"^^xsd:string .
+
+_:A6
+    sp:varName "spouse"^^xsd:string .
+
+_:A7
+    sp:varName "spouseOppositeSex"^^xsd:string .
+
+_:A8
+    sp:varName "oppositeSex"^^xsd:string .
+
+_:A9
+    sp:varName "gender"^^xsd:string .
+
